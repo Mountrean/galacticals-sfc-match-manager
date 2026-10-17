@@ -1,150 +1,124 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Galacticals SFC Match Manager</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--navy:#0b1d45;--blue:#147bd1;--pale:#eaf6ff;--line:#cfe8fa;--ink:#14213d;--muted:#65748b;--green:#2fa95b;--amber:#ffbd36;--red:#ef4444;--bg:#f5f9fd}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
-header{background:linear-gradient(120deg,#071634,#123c75);color:white;padding:22px 18px}
-.wrap{max-width:1100px;margin:auto}header .brand{display:flex;gap:14px;align-items:center} .crest{width:58px;height:58px;border:3px solid #f8c52b;border-radius:16px 16px 24px 24px;display:grid;place-items:center;font-size:28px;background:#fff;color:#071634}
-h1{font-size:clamp(22px,4vw,34px);margin:0;letter-spacing:.5px}header p{margin:6px 0 0;color:#d8e9ff;font-size:13px;letter-spacing:2px}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}button,.tab{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:14px}
-.tab{background:#e4edf8;color:var(--navy)}.tab.active{background:var(--navy);color:#fff}
-main{padding:0 16px 35px}.panel{display:none;background:white;border:1px solid #e2ebf4;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 4px 14px #0b1d4508}.panel.active{display:block}
-h2{margin:0 0 14px;color:var(--navy);font-size:21px}h3{margin:18px 0 9px;color:var(--navy);font-size:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}label{font-size:12px;color:var(--muted);font-weight:700}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd7e5;border-radius:8px;font-size:14px;background:white;color:var(--ink)}textarea{min-height:70px;resize:vertical}
-.primary{background:var(--blue);color:white}.secondary{background:#e7eef8;color:var(--navy)}.danger{background:#ffe8e8;color:#a4161a}.small{padding:6px 9px;font-size:12px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hint{font-size:12px;color:var(--muted);line-height:1.5}
-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th{background:var(--navy);color:white;text-align:left;padding:10px 8px}td{padding:9px 8px;border-bottom:1px solid #e6edf5}tbody tr:nth-child(even){background:#eff8ff}.table-wrap{overflow-x:auto;border-radius:8px}
-.pill{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}.FIT{background:#d9f7e2;color:#12612d}.UNAVAILABLE{background:#fff0c2;color:#805500}.PENDING{background:#dce7f6;color:#25466f}.INJURED{background:#ffe0e0;color:#a51620}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:16px}.stat{border:1px solid var(--line);background:#f5fbff;border-radius:12px;padding:14px}.stat strong{display:block;font-size:25px;color:var(--navy)}.stat span{font-size:12px;color:var(--muted)}
-.team-title{margin-top:22px;padding-left:10px;border-left:5px solid #20a4f3}
-.scorer-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end;margin:8px 0;padding:10px;background:#f3f8fd;border:1px solid #d9e8f7;border-radius:10px}.poster{background:#f8fbff;border:2px solid #d6e7f7;border-radius:14px;padding:20px;margin-top:14px}.poster-head{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:4px solid var(--blue);padding-bottom:12px;margin-bottom:16px}.poster h2{font-size:25px;margin:0}.poster-sub{color:var(--muted);font-size:12px;letter-spacing:2px}.poster-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.poster h3{margin-top:0;background:var(--navy);color:white;padding:10px;border-radius:6px}.poster table{margin-top:0}.poster table th{background:#173b6d}.poster .winner{background:#fff6d7}.poster-foot{margin-top:18px;text-align:center;font-weight:800;letter-spacing:3px;color:var(--blue)}
-footer{text-align:center;color:#738197;font-size:11px;padding:10px 16px 25px}
-@media(max-width:600px){.scorer-row{grid-template-columns:1fr 1fr}.poster-grid{grid-template-columns:1fr}.poster{padding:10px}.panel{padding:13px}td,th{padding:8px 6px;font-size:12px}.brand .crest{width:48px;height:48px}}
+:root{--navy:#10294a;--blue:#1769aa;--pale:#eaf4fc;--line:#d9e3ed;--ink:#172b40;--muted:#617386;--white:#fff;--green:#d9f4e3;--amber:#fff0c2;--red:#ffe0e0}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:1120px;margin:auto;padding:18px}.hero{background:var(--navy);color:white;padding:24px;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.hero h1{margin:0;font-size:clamp(23px,4vw,34px);letter-spacing:.3px}.hero p{margin:5px 0 0;color:#dce9f7}.pill{background:#eaf4fc;color:var(--navy);padding:7px 11px;border-radius:99px;font-size:12px;font-weight:800}.statusline{margin:14px 0;color:var(--muted);font-size:13px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button,.btn{border:0;border-radius:9px;background:var(--navy);color:white;padding:10px 14px;font-weight:750;cursor:pointer}.tabs button{background:white;color:var(--navy);border:1px solid var(--line)}.tabs button.active{background:var(--navy);color:white}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #10294a0a}.panel h2{margin:0 0 13px;font-size:20px}.sub{color:var(--muted);font-size:13px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th{background:var(--navy);color:white;text-align:left;padding:11px 10px;font-size:12px;letter-spacing:.3px}td{padding:10px;border-bottom:1px solid var(--line)}tbody tr:nth-child(even){background:#f0f7fd}.empty{text-align:center;color:var(--muted);padding:24px}.badge{display:inline-block;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:800}.FIT{background:var(--green);color:#126536}.UNAVAILABLE{background:var(--amber);color:#805900}.INJURED{background:var(--red);color:#9a2020}.PENDING{background:#e8e7ff;color:#49409a}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:800;color:#42566a}.field input,.field select,.field textarea{font:inherit;padding:10px;border:1px solid #cbd7e3;border-radius:8px;background:white;width:100%}.field textarea{min-height:70px;resize:vertical}.formrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.formrow .btn{align-self:end}.hidden{display:none!important}.notice{padding:12px;border-radius:9px;background:#fff5d9;color:#755300;margin:10px 0}.good{background:#e3f7eb;color:#155e32}.bad{background:#ffe8e8;color:#8c2020}.match{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:12px 0}.score{font-size:22px;font-weight:900;color:var(--navy);white-space:nowrap}.smallbtn{padding:6px 9px;font-size:12px}.foot{font-size:12px;color:var(--muted);text-align:center;padding:20px}.topscorer{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid var(--line)}.rank{font-weight:900;color:var(--blue);width:34px}
+@media(max-width:600px){.wrap{padding:10px}.hero{padding:18px}.panel{padding:13px}.match{align-items:flex-start}.score{font-size:19px}}
 </style>
 </head>
 <body>
-<header><div class="wrap brand"><div class="crest">⚽</div><div><h1>GALACTICALS SFC</h1><p>INTERNAL LEAGUE MATCH MANAGER · PLAY × COMPETE × GROW</p></div></div></header>
-<main class="wrap">
-<nav>
-<button class="tab active" data-tab="dashboard">Dashboard</button>
-<button class="tab" data-tab="matches">Enter Match Day</button>
-<button class="tab" data-tab="standings">League Table</button>
-<button class="tab" data-tab="poster">Standings Poster</button>
-<button class="tab" data-tab="players">Players & Status</button>
-<button class="tab" data-tab="backup">Backup / Restore</button>
-</nav>
-
-<section id="dashboard" class="panel active">
-<h2>League dashboard</h2>
-<div class="cards" id="stats"></div>
-<h3>Latest results</h3><div id="latest"></div>
-<h3>Current top goalscorers</h3><div id="topscorers"></div>
-<p class="hint">Enter each fixture under “Enter Match Day”. The league table and goalscorers update automatically.</p>
-</section>
-
-<section id="matches" class="panel">
-<h2>Enter a match result</h2>
-<div class="grid">
-<div class="field"><label>Match day</label><input id="matchday" placeholder="e.g. Match Day 2"></div>
-<div class="field"><label>Date</label><input id="matchdate" type="date"></div>
-<div class="field"><label>Home team</label><select id="home"><option>Hama FC</option><option>Kai FC</option><option>Yasin FC</option></select></div>
-<div class="field"><label>Away team</label><select id="away"><option>Kai FC</option><option>Yasin FC</option><option>Hama FC</option></select></div>
-<div class="field"><label>Home goals</label><input id="hg" type="number" min="0" value="0"></div>
-<div class="field"><label>Away goals</label><input id="ag" type="number" min="0" value="0"></div>
+<div class="wrap">
+<header class="hero"><div><h1>GALACTICALS SFC</h1><p>Match Manager · League standings, results and squads</p></div><span class="pill" id="rolePill">PUBLIC VIEW</span></header>
+<div class="statusline" id="connectionStatus">Connecting to the shared league database…</div>
+<div class="tabs" id="tabs">
+<button class="active" data-tab="standings">League Table</button><button data-tab="results">Match Results</button><button data-tab="squads">Squads & Status</button><button data-tab="scorers">Top Scorers</button><button data-tab="admin">Admin Login</button>
 </div>
-<h3>Goalscorers and assists (optional)</h3>
-<p class="hint">Add every goalscorer for this match. Enter the number of goals scored by each player and, if known, their assists. Own goals can be left out of player totals.</p>
-<div id="scorerRows"></div>
-<div class="actions"><button class="secondary" id="addScorer">+ Add goalscorer</button><button class="primary" id="saveMatch">Save match result</button></div>
-<h3>Match history</h3>
-<div class="grid"><div class="field"><label>Filter by match day</label><select id="matchFilter"><option value="ALL">All match days</option></select></div></div>
-<div id="matcheslist"></div>
-</section>
-
-<section id="standings" class="panel">
-<h2>League standings</h2>
-<p class="hint">Points are calculated using 3 points for a win and 1 for a draw.</p>
-<div id="table"></div>
-<h3>Top goalscorers</h3><div id="scorerTable"></div>
-</section>
-
-<section id="poster" class="panel">
-<h2>Galacticals league poster</h2>
-<p class="hint">This poster uses your current league table and goalscorers. Use “Print / Save as PDF” to save it as an image-like PDF from your browser.</p>
-<div class="actions"><button class="primary" id="printPoster">Print / Save as PDF</button></div>
-<div id="posterContent" class="poster"></div>
-</section>
-
-<section id="players" class="panel">
-<h2>Players & availability</h2>
-<p class="hint">Change player status when needed. Use the form to add a player or update a position. “Pending” is separate from unavailable and injured.</p>
-<div class="grid">
-<div class="field"><label>Team</label><select id="pteam"><option>Yasin FC</option><option>Hama FC</option><option>Kai FC</option></select></div>
-<div class="field"><label>Player name</label><input id="pname" placeholder="Player name"></div>
-<div class="field"><label>Position</label><input id="ppos" placeholder="e.g. DEF / MID"></div>
-<div class="field"><label>Status</label><select id="pstatus"><option>FIT</option><option>UNAVAILABLE</option><option>PENDING</option><option>INJURED</option></select></div>
+<div id="message" class="notice hidden"></div>
+<section id="standings" class="panel"><h2>League Table</h2><p class="sub">Standings are calculated from saved match results.</p><div class="tablewrap"><table><thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody id="standingsBody"><tr><td colspan="10" class="empty">Loading…</td></tr></tbody></table></div></section>
+<section id="results" class="panel hidden"><h2>Match Results</h2><div id="resultsList"></div></section>
+<section id="squads" class="panel hidden"><h2>Squads & Player Status</h2><div class="tabs" id="teamFilters"><button class="active" data-team="All">All teams</button><button data-team="Yasin FC">Yasin FC</button><button data-team="Hama FC">Hama FC</button><button data-team="Kai FC">Kai FC</button></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Team</th><th>Position</th><th>Status</th><th id="actionHead" class="hidden">Admin action</th></tr></thead><tbody id="playersBody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table></div></section>
+<section id="scorers" class="panel hidden"><h2>Top Scorers</h2><div id="scorersList"></div></section>
+<section id="admin" class="panel hidden">
+<h2>Administrator</h2><p class="sub">Sign in with the administrator account you created in Supabase. Only accounts explicitly listed as league admins can change shared data.</p>
+<div id="loginBox"><div class="grid"><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="Your admin email"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"></div></div><div class="formrow"><button class="btn" id="loginBtn">Sign in</button></div></div>
+<div id="adminBox" class="hidden">
+<div class="notice good" id="adminWelcome">Signed in.</div><button class="btn" id="logoutBtn">Sign out</button>
+<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+<h2>Add Match Result</h2><div class="grid">
+<div class="field"><label>Match date</label><input id="matchDate" type="date"></div>
+<div class="field"><label>Home team</label><select id="homeTeam"><option>Yasin FC</option><option>Hama FC</option><option>Kai FC</option></select></div>
+<div class="field"><label>Away team</label><select id="awayTeam"><option>Hama FC</option><option>Kai FC</option><option>Yasin FC</option></select></div>
+<div class="field"><label>Home score</label><input id="homeScore" type="number" min="0" step="1" value="0"></div>
+<div class="field"><label>Away score</label><input id="awayScore" type="number" min="0" step="1" value="0"></div>
+<div class="field"><label>Notes (optional)</label><input id="matchNotes" placeholder="Match day / venue / notes"></div>
+<div class="field" style="grid-column:1/-1"><label>Goalscorers (optional, one per line: Player name | Team | Goals)</label><textarea id="goalLines" placeholder="Zabudha | Yasin FC | 2&#10;Martin | Kai FC | 1"></textarea></div>
+</div><div class="formrow"><button class="btn" id="saveMatchBtn">Save match</button></div>
+<hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+<h2>Add Player</h2><div class="grid">
+<div class="field"><label>Player name</label><input id="playerName" placeholder="Full name"></div>
+<div class="field"><label>Team</label><select id="playerTeam"><option>Yasin FC</option><option>Hama FC</option><option>Kai FC</option></select></div>
+<div class="field"><label>Position</label><input id="playerPosition" placeholder="DEF / MID / FWD / GK"></div>
+<div class="field"><label>Status</label><select id="playerStatus"><option>FIT</option><option>UNAVAILABLE</option><option>INJURED</option><option>PENDING</option></select></div>
+</div><div class="formrow"><button class="btn" id="addPlayerBtn">Add player</button></div>
+<p class="sub">Use the status buttons in Squads & Status to update existing players. Results and squad changes are saved to the shared database.</p>
 </div>
-<div class="actions"><button class="primary" id="savePlayer">Add / update player</button></div>
-<div id="rosters"></div>
 </section>
-
-<section id="backup" class="panel">
-<h2>Backup your league data</h2>
-<p>Data is saved in this browser on this device. Export a backup regularly so you can restore it if you change phones or clear browser data.</p>
-<div class="actions"><button class="primary" id="export">Download backup (JSON)</button><button class="secondary" id="exportCSV">Download match results (CSV)</button></div>
-<h3>Restore a backup</h3><div class="field"><label>Choose a previously downloaded JSON backup</label><input id="importfile" type="file" accept=".json,application/json"></div>
-<div class="actions"><button class="danger" id="clear">Reset all app data</button></div>
-<p class="hint">Reset is permanent for this browser unless you have a backup. Export first.</p>
-</section>
-</main>
-<footer>Galacticals SFC · Match-day records are stored locally in your browser.</footer>
+<div class="foot">Galacticals SFC · Shared database powered by Supabase</div>
+</div>
 <script>
-const initialPlayers=[
-["Yasin FC","Yasin","DEF","FIT"],["Yasin FC","Emtee","DEF / MID","FIT"],["Yasin FC","Zabudha","DEF / MID","FIT"],["Yasin FC","Paul","FWD","FIT"],["Yasin FC","Sajja","CF","UNAVAILABLE"],["Yasin FC","Maystar","DEF","FIT"],["Yasin FC","Wasswa","FWD","FIT"],["Yasin FC","Taabu","FWD","PENDING"],["Yasin FC","Nico","DEF / FWD","FIT"],["Yasin FC","Ariaka","DEF","UNAVAILABLE"],
-["Hama FC","Hama","DEF / MID","FIT"],["Hama FC","Tonny","GK / DEF","FIT"],["Hama FC","Xulf","FWD / CF","FIT"],["Hama FC","Dala","FWD","FIT"],["Hama FC","Kaija","GK / FWD","FIT"],["Hama FC","Dawson","DEF","FIT"],["Hama FC","Bishop","MID / DEF","FIT"],["Hama FC","Kim","MID","FIT"],["Hama FC","Shadow","CF / DEF","INJURED"],["Hama FC","Abigaba","MID / CF","INJURED"],
-["Kai FC","Kai","MID / DEF","FIT"],["Kai FC","Julius","DEF","FIT"],["Kai FC","Ibra","MID / FWD","FIT"],["Kai FC","Waliggo","MID / DEF","FIT"],["Kai FC","Salim","DEF","FIT"],["Kai FC","Muhamed","CF / FWD","FIT"],["Kai FC","Bumba","GK / FWD","FIT"],["Kai FC","Martin","CF / DEF","FIT"],["Kai FC","Dauda","GK","FIT"]
-].map((x,i)=>({id:i+1,team:x[0],name:x[1],position:x[2],status:x[3]}));
-const teams=["Hama FC","Kai FC","Yasin FC"];
-let data={players:initialPlayers,matches:[],nextId:30};
-try{const saved=localStorage.getItem("galacticalsMatchManager");if(saved){const parsed=JSON.parse(saved);if(parsed.players&&parsed.matches)data=parsed;}}catch(e){}
-function persist(){localStorage.setItem("galacticalsMatchManager",JSON.stringify(data));renderAll()}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function statusPill(s){return `<span class="pill ${esc(s)}">${esc(s)}</span>`}
-function table(headers,rows){if(!rows.length)return '<p class="hint">Nothing recorded yet.</p>';return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`}
-function standings(){let s=teams.map(team=>({team,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}));data.matches.forEach(m=>{let h=s.find(x=>x.team===m.home),a=s.find(x=>x.team===m.away);if(!h||!a)return;h.p++;a.p++;h.gf+=m.hg;h.ga+=m.ag;a.gf+=m.ag;a.ga+=m.hg;if(m.hg>m.ag){h.w++;h.pts+=3;a.l++}else if(m.hg<m.ag){a.w++;a.pts+=3;h.l++}else{h.d++;a.d++;h.pts++;a.pts++}});return s.map(x=>({...x,gd:x.gf-x.ga})).sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf)}
-function scorers(){let m={};data.matches.forEach(match=>(match.scorers||[]).forEach(sc=>{let k=sc.player+"|"+sc.team;m[k]??={player:sc.player,team:sc.team,goals:0};m[k].goals+=Number(sc.goals)||0;m[k].assists=(m[k].assists||0)+(Number(sc.assists)||0)}));return Object.values(m).sort((a,b)=>b.goals-a.goals||a.player.localeCompare(b.player))}
-function renderPoster(){const st=standings(),sc=scorers();document.getElementById("posterContent").innerHTML=`<div class="poster-head"><div><h2>GALACTICALS SFC</h2><div class="poster-sub">INTERNAL LEAGUE · PLAY × COMPETE × GROW</div></div><strong>LEAGUE STANDINGS & STATISTICS</strong></div><div class="poster-grid"><div><h3>LEAGUE TABLE</h3>${table(["POS","TEAM","P","W","D","L","GF","GA","GD","PTS"],st.map((x,i)=>[i+1,`<b>${esc(x.team)}</b>`,x.p,x.w,x.d,x.l,x.gf,x.ga,(x.gd>0?"+":"")+x.gd,`<b>${x.pts}</b>`]))}</div><div><h3>TOP GOALSCORERS</h3>${table(["#","PLAYER","TEAM","GOALS","ASSISTS"],sc.map((x,i)=>[i+1,`<b>${esc(x.player)}</b>`,esc(x.team),x.goals,x.assists||0]))}</div></div><div class="poster-foot">THE GAME NEVER STOPS · GALACTICALS SFC</div>`}
-function renderAll(){renderStats();renderStandings();renderMatches();renderRosters();renderScorerSelect();renderPoster()}
-function renderStats(){const s=standings();document.getElementById("stats").innerHTML=[["MATCHES",data.matches.length],["TEAMS",3],["PLAYERS",data.players.length],["GOALS",data.matches.reduce((n,m)=>n+m.hg+m.ag,0)]].map(([a,b])=>`<div class="stat"><strong>${b}</strong><span>${a}</span></div>`).join("");document.getElementById("latest").innerHTML=table(["MATCH DAY","FIXTURE","SCORE"],data.matches.slice().reverse().slice(0,5).map(m=>[esc(m.day||"—"),`${esc(m.home)} vs ${esc(m.away)}`,`<b>${m.hg} – ${m.ag}</b>`]));document.getElementById("topscorers").innerHTML=table(["#","PLAYER","TEAM","GOALS","ASSISTS"],scorers().slice(0,5).map((x,i)=>[i+1,esc(x.player),esc(x.team),x.goals,x.assists||0]))}
-function renderStandings(){document.getElementById("table").innerHTML=table(["POS","TEAM","P","W","D","L","GF","GA","GD","PTS"],standings().map((x,i)=>[i+1,`<b>${esc(x.team)}</b>`,x.p,x.w,x.d,x.l,x.gf,x.ga,(x.gd>0?"+":"")+x.gd,x.pts]));document.getElementById("scorerTable").innerHTML=table(["#","PLAYER","TEAM","GOALS","ASSISTS"],scorers().map((x,i)=>[i+1,esc(x.player),esc(x.team),x.goals,x.assists||0]))}
-function renderMatches(){const filter=document.getElementById("matchFilter");const old=filter.value;const days=[...new Set(data.matches.map(m=>m.day||"Match Day"))];filter.innerHTML='<option value="ALL">All match days</option>'+days.map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("");if(days.includes(old))filter.value=old;const list=(filter.value==="ALL"?data.matches:data.matches.filter(m=>(m.day||"Match Day")===filter.value));document.getElementById("matcheslist").innerHTML=table(["DAY / DATE","FIXTURE","SCORE","GOALSCORERS · ASSISTS","ACTION"],list.slice().reverse().map(m=>[`${esc(m.day||"—")}<br><small>${esc(m.date||"")}</small>`,`${esc(m.home)} vs ${esc(m.away)}`,`<b>${m.hg} – ${m.ag}</b>`,(m.scorers||[]).map(s=>`${esc(s.player)} (${s.goals}${s.assists?`, ${s.assists} ast`:""})`).join(", ")||"—",`<button class="danger small" onclick="deleteMatch(${m.id})">Delete</button>`]));}
-function renderRosters(){document.getElementById("rosters").innerHTML=teams.map(team=>`<h3 class="team-title">${team}</h3>`+table(["PLAYER","POSITION","STATUS","UPDATE","REMOVE"],data.players.filter(p=>p.team===team).map(p=>[esc(p.name),esc(p.position),statusPill(p.status),`<select onchange="changeStatus(${p.id},this.value)">${["FIT","UNAVAILABLE","PENDING","INJURED"].map(s=>`<option ${p.status===s?"selected":""}>${s}</option>`).join("")}</select>`,`<button class="danger small" onclick="deletePlayer(${p.id})">Remove</button>`]))).join("")}
-function addScorerRow(player="",goals=1,assists=0){
-  const container=document.getElementById("scorerRows");
-  const row=document.createElement("div");
-  row.className="scorer-row";
-  const options=data.players.map(p=>`<option value="${esc(p.id)}" ${p.name===player?"selected":""}>${esc(p.name)} — ${esc(p.team)}</option>`).join("");
-  row.innerHTML=`<div class="field"><label>Goalscorer</label><select class="sr-player"><option value="">Select player</option>${options}</select></div><div class="field"><label>Goals</label><input class="sr-goals" type="number" min="1" step="1" value="${Math.max(1,Number(goals)||1)}"></div><div class="field"><label>Assists</label><input class="sr-assists" type="number" min="0" step="1" value="${Math.max(0,Number(assists)||0)}"></div><button type="button" class="danger small sr-remove">Remove</button>`;
-  row.querySelector(".sr-remove").addEventListener("click",()=>{row.remove();});
-  container.appendChild(row);
+const SUPABASE_URL = "https://fvedzafpfuknmrfnfbou.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_5rHjXHoE6yAnz9zIIoVzuQ_oQesKA69";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+let isAdmin=false, currentUser=null, allPlayers=[], allMatches=[], allScorers=[], activeTeam="All";
+const teams=["Yasin FC","Hama FC","Kai FC"];
+const $=id=>document.getElementById(id);
+function message(text,type=""){const m=$("message");m.textContent=text;m.className="notice"+(type?" "+type:"");m.classList.remove("hidden");}
+function clearMessage(){$("message").classList.add("hidden");}
+function setStatus(t){$("connectionStatus").textContent=t;}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function showTab(tab){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));["standings","results","squads","scorers","admin"].forEach(id=>$(id).classList.toggle("hidden",id!==tab));}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.querySelectorAll("#teamFilters button").forEach(b=>b.addEventListener("click",()=>{activeTeam=b.dataset.team;document.querySelectorAll("#teamFilters button").forEach(x=>x.classList.toggle("active",x===b));renderPlayers();}));
+function computeStandings(){
+const data=teams.map(team=>({team,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}));
+for(const m of allMatches){let h=data.find(x=>x.team===m.home_team),a=data.find(x=>x.team===m.away_team);if(!h||!a||m.home_score==null||m.away_score==null)continue;const hs=Number(m.home_score),as=Number(m.away_score);h.p++;a.p++;h.gf+=hs;h.ga+=as;a.gf+=as;a.ga+=hs;if(hs>as){h.w++;h.pts+=3;a.l++;}else if(hs<as){a.w++;a.pts+=3;h.l++;}else{h.d++;a.d++;h.pts++;a.pts++;}}
+data.forEach(x=>x.gd=x.gf-x.ga);data.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
+$("standingsBody").innerHTML=data.map((x,i)=>`<tr><td>${i+1}</td><td><strong>${esc(x.team)}</strong></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gd>0?"+":""}${x.gd}</td><td><strong>${x.pts}</strong></td></tr>`).join("");
 }
-function renderScorerSelect(){const old=[...document.querySelectorAll(".scorer-row")].map(r=>({player:(data.players.find(p=>p.id===Number(r.querySelector(".sr-player").value))||{}).name||"",goals:r.querySelector(".sr-goals").value,assists:r.querySelector(".sr-assists").value}));document.getElementById("scorerRows").innerHTML="";if(old.length)old.forEach(x=>addScorerRow(x.player,Number(x.goals)||1,Number(x.assists)||0));else addScorerRow();}
-function deleteMatch(id){if(confirm("Delete this match result?")){data.matches=data.matches.filter(m=>m.id!==id);persist()}}
-function deletePlayer(id){const p=data.players.find(p=>p.id===id);if(confirm("Remove "+p.name+" from the roster?")){data.players=data.players.filter(p=>p.id!==id);persist()}}
-function changeStatus(id,status){const p=data.players.find(p=>p.id===id);if(p){p.status=status;persist()}}
-function addMatch(){const day=document.getElementById("matchday").value.trim()||"Match Day";const date=document.getElementById("matchdate").value;const home=document.getElementById("home").value,away=document.getElementById("away").value;const hg=Number(document.getElementById("hg").value),ag=Number(document.getElementById("ag").value);if(home===away){alert("Choose two different teams.");return}if(hg<0||ag<0||!Number.isInteger(hg)||!Number.isInteger(ag)){alert("Enter whole-number scores.");return}const scorerRows=[...document.querySelectorAll(".scorer-row")];const scored=[];for(const r of scorerRows){const playerId=Number(r.querySelector(".sr-player").value);const goals=Number(r.querySelector(".sr-goals").value);const assists=Number(r.querySelector(".sr-assists").value)||0;if(!playerId)continue;if(!Number.isInteger(goals)||goals<1||!Number.isInteger(assists)||assists<0){alert("Check goals and assists: goals must be 1 or more and assists cannot be negative.");return}const p=data.players.find(x=>x.id===playerId);if(p){if(p.team!==home&&p.team!==away){alert("Choose a goalscorer from one of the teams in this match.");return}scored.push({player:p.name,team:p.team,goals,assists})}}const totalHome=scored.filter(x=>x.team===home).reduce((n,x)=>n+x.goals,0),totalAway=scored.filter(x=>x.team===away).reduce((n,x)=>n+x.goals,0);if(scored.length&&(totalHome>hg||totalAway>ag)){alert("The goals entered for a team exceed that team's match score. Please check the scorer rows.");return}const m={id:Date.now(),day,date,home,away,hg,ag,scorers:scored};data.matches.push(m);persist();document.getElementById("hg").value=0;document.getElementById("ag").value=0;document.getElementById("scorerRows").innerHTML="";addScorerRow();alert("Match result saved.");}
-document.getElementById("saveMatch").onclick=addMatch;document.getElementById("addScorer").onclick=()=>addScorerRow();document.getElementById("matchFilter").onchange=renderMatches;document.getElementById("printPoster").onclick=()=>{const content=document.getElementById("posterContent").innerHTML;const w=window.open("","_blank");if(!w){alert("Allow pop-ups to print the poster.");return}w.document.write(`<html><head><title>Galacticals League Poster</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#14213d}h1{color:#0b1d45;font-size:28px}h2{color:#0b1d45}table{width:100%;border-collapse:collapse;margin:10px 0 22px;font-size:12px}th{background:#0b1d45;color:white;text-align:left;padding:8px}td{padding:7px;border-bottom:1px solid #ddd}tr:nth-child(even){background:#eff8ff}.poster-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.poster-head{border-bottom:4px solid #147bd1;padding-bottom:12px}.poster-sub{letter-spacing:2px;color:#65748b}.poster-foot{text-align:center;color:#147bd1;font-weight:bold;letter-spacing:3px;margin-top:20px}@media print{body{padding:0}}</style></head><body>${content}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()};
-document.getElementById("savePlayer").onclick=()=>{const team=document.getElementById("pteam").value,name=document.getElementById("pname").value.trim(),position=document.getElementById("ppos").value.trim(),status=document.getElementById("pstatus").value;if(!name||!position){alert("Enter a player name and position.");return}let p=data.players.find(p=>p.team===team&&p.name.toLowerCase()===name.toLowerCase());if(p){p.position=position;p.status=status}else data.players.push({id:++data.nextId,team,name,position,status});document.getElementById("pname").value="";document.getElementById("ppos").value="";persist()}
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id===b.dataset.tab))});
-document.getElementById("export").onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});download(blob,"galacticals-backup.json")};
-document.getElementById("exportCSV").onclick=()=>{const rows=[["Match day","Date","Home","Home goals","Away goals","Away","Goalscorers","Assists"],...data.matches.map(m=>[m.day,m.date,m.home,m.hg,m.ag,m.away,(m.scorers||[]).map(s=>`${s.player} (${s.goals})`).join("; "),(m.scorers||[]).map(s=>`${s.player} (${s.assists||0})`).join("; ")])];const csv=rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");download(new Blob([csv],{type:"text/csv"}),"galacticals-results.csv")};
-function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
-document.getElementById("importfile").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.players)||!Array.isArray(d.matches))throw Error();if(confirm("Restore this backup and replace the current data?")){data=d;persist();alert("Backup restored.")}}catch(err){alert("That backup file is not valid.")};e.target.value=""};
-document.getElementById("clear").onclick=()=>{if(confirm("Permanently reset all matches and player changes on this browser? Export a backup first.")){data={players:initialPlayers.map(p=>({...p})),matches:[],nextId:30};persist()}};
-renderAll();
+function renderResults(){
+const list=$("resultsList");if(!allMatches.length){list.innerHTML='<div class="empty">No match results have been saved yet.</div>';return;}
+list.innerHTML=[...allMatches].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.created_at||"").localeCompare(a.created_at||"")).map(m=>`<div class="match"><div><strong>${esc(m.home_team)} vs ${esc(m.away_team)}</strong><div class="sub">${esc(m.date||"Date not set")}${m.notes?" · "+esc(m.notes):""}</div></div><div class="score">${m.home_score} – ${m.away_score}</div>${isAdmin?`<button class="btn smallbtn" data-delete-match="${m.id}">Delete</button>`:""}</div>`).join("");
+list.querySelectorAll("[data-delete-match]").forEach(b=>b.addEventListener("click",()=>deleteMatch(b.dataset.deleteMatch)));
+}
+function renderPlayers(){
+const list=allPlayers.filter(p=>activeTeam==="All"||p.team===activeTeam).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
+$("actionHead").classList.toggle("hidden",!isAdmin);
+if(!list.length){$("playersBody").innerHTML='<tr><td colspan="5" class="empty">No players found in the database yet.</td></tr>';return;}
+$("playersBody").innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.team)}</td><td>${esc(p.position||"—")}</td><td><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td><select data-status="${p.id}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select> <button class="btn smallbtn" data-save-status="${p.id}">Save</button></td>`:""}</tr>`).join("");
+$("playersBody").querySelectorAll("[data-save-status]").forEach(b=>b.addEventListener("click",()=>updateStatus(b.dataset.saveStatus)));
+}
+function renderScorers(){
+const tally={};for(const s of allScorers){const k=s.player_name; if(!tally[k])tally[k]={name:k,team:s.team,goals:0};tally[k].goals+=Number(s.goals||0);}
+const list=Object.values(tally).sort((a,b)=>b.goals-a.goals||a.name.localeCompare(b.name));
+$("scorersList").innerHTML=list.length?list.map((s,i)=>`<div class="topscorer"><div><span class="rank">${i+1}</span><strong>${esc(s.name)}</strong><div class="sub" style="margin-left:34px">${esc(s.team||"")}</div></div><strong>${s.goals} ${s.goals===1?"goal":"goals"}</strong></div>`).join(""):'<div class="empty">Goalscorers will appear here after they are entered with match results.</div>';
+}
+async function loadData(){
+setStatus("Loading shared league data…");
+const [p,m,s]=await Promise.all([db.from("players").select("*").order("name"),db.from("matches").select("*").order("date",{ascending:false}),db.from("scorers").select("*")]);
+if(p.error||m.error||s.error){setStatus("Database connection needs attention.");message("Could not load shared data. Check that the Supabase URL/key are correct and that the database tables and public read policies are set up. Details: "+[p.error,m.error,s.error].filter(Boolean).map(e=>e.message).join(" · "),"bad");return;}
+allPlayers=p.data||[];allMatches=m.data||[];allScorers=s.data||[];computeStandings();renderResults();renderPlayers();renderScorers();setStatus("Connected · Shared data loaded"+(isAdmin?" · Administrator signed in":" · Public view"));
+}
+async function checkAdmin(){
+const {data:{user}}=await db.auth.getUser();currentUser=user||null;isAdmin=false;
+if(user){const {data,error}=await db.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();if(!error&&data)isAdmin=true;}
+$("rolePill").textContent=isAdmin?"ADMIN MODE":"PUBLIC VIEW";$("loginBox").classList.toggle("hidden",!!user);$("adminBox").classList.toggle("hidden",!isAdmin);if(user&&!isAdmin){$("loginBox").classList.add("hidden");$("adminBox").classList.remove("hidden");$("adminBox").innerHTML='<div class="notice bad">This account is signed in but is not listed as a league administrator. Ask the project owner to check the admin_users table.</div><button class="btn" id="logoutBtn2">Sign out</button>';$("logoutBtn2").onclick=()=>db.auth.signOut().then(()=>location.reload());}
+else if(isAdmin){$("adminWelcome").textContent="Administrator signed in as "+user.email;}
+await loadData();
+}
+$("loginBtn").addEventListener("click",async()=>{clearMessage();const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("Enter your admin email and password.","bad");return;}const {error}=await db.auth.signInWithPassword({email,password});if(error){message("Sign-in failed: "+error.message,"bad");return;}await checkAdmin();if(isAdmin)message("Administrator login successful.","good");});
+$("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();isAdmin=false;await checkAdmin();message("You have signed out.","good");});
+async function updateStatus(id){const sel=$("playersBody").querySelector(`[data-status="${CSS.escape(id)}"]`);if(!sel)return;const {error}=await db.from("players").update({status:sel.value}).eq("id",id);if(error){message("Could not update player status: "+error.message,"bad");return;}message("Player status updated.","good");await loadData();}
+$("addPlayerBtn").addEventListener("click",async()=>{const name=$("playerName").value.trim(),team=$("playerTeam").value,position=$("playerPosition").value.trim(),status=$("playerStatus").value;if(!name){message("Enter the player's name.","bad");return;}const {error}=await db.from("players").insert({name,team,position,status});if(error){message("Could not add player: "+error.message,"bad");return;}["playerName","playerPosition"].forEach(id=>$(id).value="");message("Player added to the shared database.","good");await loadData();});
+$("saveMatchBtn").addEventListener("click",async()=>{
+const date=$("matchDate").value,home_team=$("homeTeam").value,away_team=$("awayTeam").value,home_score=Number($("homeScore").value),away_score=Number($("awayScore").value),notes=$("matchNotes").value.trim();
+if(home_team===away_team){message("Choose two different teams.","bad");return;}if($("homeScore").value===""||$("awayScore").value===""||home_score<0||away_score<0){message("Enter valid scores for both teams.","bad");return;}
+const {data:match,error}=await db.from("matches").insert({date:date||null,home_team,away_team,home_score,away_score,notes}).select().single();
+if(error){message("Could not save match: "+error.message,"bad");return;}
+const lines=$("goalLines").value.split("\n").map(x=>x.trim()).filter(Boolean);const rows=[];
+for(const line of lines){const parts=line.split("|").map(x=>x.trim());if(parts.length!==3||!parts[0]||!teams.includes(parts[1])||!Number.isInteger(Number(parts[2]))||Number(parts[2])<1){message("Match saved, but scorer line was skipped because it must be: Player name | Team | Goals. Fix scorer entries and add them using a new result only if needed.","bad");continue;}rows.push({match_id:match.id,player_name:parts[0],team:parts[1],goals:Number(parts[2])});}
+if(rows.length){const {error:se}=await db.from("scorers").insert(rows);if(se)message("Match saved, but goalscorers could not be saved: "+se.message,"bad");}
+$("matchNotes").value="";$("goalLines").value="";message("Match result saved to the shared league database.","good");await loadData();
+});
+async function deleteMatch(id){if(!confirm("Delete this match and its linked goalscorer records?"))return;const {error}=await db.from("matches").delete().eq("id",id);if(error){message("Could not delete match: "+error.message,"bad");return;}message("Match deleted.","good");await loadData();}
+db.auth.onAuthStateChange(()=>{setTimeout(()=>checkAdmin(),0);});
+db.channel("galacticals-live").on("postgres_changes",{event:"*",schema:"public",table:"matches"},()=>loadData()).on("postgres_changes",{event:"*",schema:"public",table:"players"},()=>loadData()).on("postgres_changes",{event:"*",schema:"public",table:"scorers"},()=>loadData()).subscribe();
+$("matchDate").value=new Date().toISOString().slice(0,10);
+checkAdmin();
+setInterval(loadData,20000);
 </script>
 </body></html>
