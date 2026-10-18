@@ -95,7 +95,7 @@ allPlayers=p.data||[];allMatches=m.data||[];allScorers=s.data||[];computeStandin
 }
 async function checkAdmin(){
 const {data:{user}}=await db.auth.getUser();currentUser=user||null;isAdmin=false;
-if(user){const {data,error}=await db.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();if(!error&&data)isAdmin=true;}
+if(user){const {data,error}=await db.rpc("is_league_admin");if(!error&&data===true)isAdmin=true;}
 $("rolePill").textContent=isAdmin?"ADMIN MODE":"PUBLIC VIEW";$("loginBox").classList.toggle("hidden",!!user);$("adminBox").classList.toggle("hidden",!isAdmin);if(user&&!isAdmin){$("loginBox").classList.add("hidden");$("adminBox").classList.remove("hidden");$("adminBox").innerHTML='<div class="notice bad">This account is signed in but is not listed as a league administrator. Ask the project owner to check the admin_users table.</div><button class="btn" id="logoutBtn2">Sign out</button>';$("logoutBtn2").onclick=()=>db.auth.signOut().then(()=>location.reload());}
 else if(isAdmin){$("adminWelcome").textContent="Administrator signed in as "+user.email;}
 await loadData();
