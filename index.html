@@ -94,22 +94,30 @@ if(p.error||m.error||s.error){setStatus("Database connection needs attention.");
 allPlayers=p.data||[];allMatches=m.data||[];allScorers=s.data||[];computeStandings();renderResults();renderPlayers();renderScorers();setStatus("Connected · Shared data loaded"+(isAdmin?" · Administrator signed in":" · Public view"));
 }
 
-async function checkAdmin(){
-  const { data: { user }, error: userError } = await db.auth.getUser();
-  currentUser = user || null;
-  isAdmin = false;
+let adminCheckRun = 0;
+async function checkAdmin(userFromAuthEvent){
+  const run = ++adminCheckRun;
+  let user = userFromAuthEvent;
 
-  if (user && !userError) {
-    // Use the RPC; direct SELECT from admin_users may be blocked by row-level security.
-    const { data, error } = await db.rpc("is_league_admin");
-    if (error) {
-      console.error("Admin check failed:", error);
-    } else {
-      isAdmin = data === true || data === "true";
-    }
-  } else if (userError) {
-    console.error("Could not read signed-in user:", userError);
+  // Read the session instead of calling getUser() during auth events.
+  if (user === undefined) {
+    const { data, error } = await db.auth.getSession();
+    if (error) console.error("Could not read auth session:", error);
+    user = data?.session?.user || null;
   }
+
+  currentUser = user || null;
+  let nextIsAdmin = false;
+
+  if (user) {
+    const { data, error } = await db.rpc("is_league_admin");
+    if (error) console.error("Admin check failed:", error);
+    else nextIsAdmin = data === true || data === "true";
+  }
+
+  // Ignore stale checks if another auth event started while this one ran.
+  if (run !== adminCheckRun) return;
+  isAdmin = nextIsAdmin;
 
   $("rolePill").textContent = isAdmin ? "ADMIN MODE" : "PUBLIC VIEW";
   $("loginBox").classList.toggle("hidden", !!user);
@@ -121,7 +129,6 @@ async function checkAdmin(){
     $("adminBox").innerHTML =
       '<div class="notice bad">Administrator access could not be verified. Check the browser console for details.</div>' +
       '<button class="btn" id="logoutBtn2">Sign out</button>';
-
     $("logoutBtn2").onclick = async () => {
       await db.auth.signOut();
       location.reload();
@@ -132,7 +139,7 @@ async function checkAdmin(){
 
   await loadData();
 }
-$("loginBtn").addEventListener("click",async()=>{clearMessage();const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("Enter your admin email and password.","bad");return;}const {error}=await db.auth.signInWithPassword({email,password});if(error){message("Sign-in failed: "+error.message,"bad");return;}await checkAdmin();if(isAdmin)message("Administrator login successful.","good");});
+$("loginBtn").addEventListener("click",async()=>{clearMessage();const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("Enter your admin email and password.","bad");return;}const {data,error}=await db.auth.signInWithPassword({email,password});if(error){message("Sign-in failed: "+error.message,"bad");return;}await checkAdmin(data?.user);if(isAdmin)message("Administrator login successful.","good");});
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();isAdmin=false;await checkAdmin();message("You have signed out.","good");});
 async function updateStatus(id){const sel=$("playersBody").querySelector(`[data-status="${CSS.escape(id)}"]`);if(!sel)return;const {error}=await db.from("players").update({status:sel.value}).eq("id",id);if(error){message("Could not update player status: "+error.message,"bad");return;}message("Player status updated.","good");await loadData();}
 $("addPlayerBtn").addEventListener("click",async()=>{const name=$("playerName").value.trim(),team=$("playerTeam").value,position=$("playerPosition").value.trim(),status=$("playerStatus").value;if(!name){message("Enter the player's name.","bad");return;}const {error}=await db.from("players").insert({name,team,position,status});if(error){message("Could not add player: "+error.message,"bad");return;}["playerName","playerPosition"].forEach(id=>$(id).value="");message("Player added to the shared database.","good");await loadData();});
@@ -147,7 +154,7 @@ if(rows.length){const {error:se}=await db.from("scorers").insert(rows);if(se)mes
 $("matchNotes").value="";$("goalLines").value="";message("Match result saved to the shared league database.","good");await loadData();
 });
 async function deleteMatch(id){if(!confirm("Delete this match and its linked goalscorer records?"))return;const {error}=await db.from("matches").delete().eq("id",id);if(error){message("Could not delete match: "+error.message,"bad");return;}message("Match deleted.","good");await loadData();}
-db.auth.onAuthStateChange(()=>{setTimeout(()=>checkAdmin(),0);});
+db.auth.onAuthStateChange((_event, session)=>{checkAdmin(session?.user || null);});
 db.channel("galacticals-live").on("postgres_changes",{event:"*",schema:"public",table:"matches"},()=>loadData()).on("postgres_changes",{event:"*",schema:"public",table:"players"},()=>loadData()).on("postgres_changes",{event:"*",schema:"public",table:"scorers"},()=>loadData()).subscribe();
 $("matchDate").value=new Date().toISOString().slice(0,10);
 checkAdmin();
