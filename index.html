@@ -53,7 +53,13 @@
 <script>
 const SUPABASE_URL = "https://fvedzafpfuknmrfnfbou.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_5rHjXHoE6yAnz9zIIoVzuQ_oQesKA69";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 let isAdmin=false, currentUser=null, allPlayers=[], allMatches=[], allScorers=[], activeTeam="All";
 const teams=["Yasin FC","Hama FC","Kai FC"];
 const $=id=>document.getElementById(id);
@@ -154,7 +160,19 @@ if(rows.length){const {error:se}=await db.from("scorers").insert(rows);if(se)mes
 $("matchNotes").value="";$("goalLines").value="";message("Match result saved to the shared league database.","good");await loadData();
 });
 async function deleteMatch(id){if(!confirm("Delete this match and its linked goalscorer records?"))return;const {error}=await db.from("matches").delete().eq("id",id);if(error){message("Could not delete match: "+error.message,"bad");return;}message("Match deleted.","good");await loadData();}
-db.auth.onAuthStateChange((_event, session)=>{checkAdmin(session?.user || null);});
+db.auth.onAuthStateChange((event, session)=>{
+  // Defer Supabase work until the auth callback has finished.
+  // Do not treat unrelated auth events with a missing session as a sign-out.
+  setTimeout(()=>{
+    if (event === "SIGNED_OUT") {
+      checkAdmin(null);
+    } else if (session?.user) {
+      checkAdmin(session.user);
+    } else if (event === "INITIAL_SESSION") {
+      checkAdmin();
+    }
+  }, 0);
+});
 db.channel("galacticals-live").on("postgres_changes",{event:"*",schema:"public",table:"matches"},()=>loadData()).on("postgres_changes",{event:"*",schema:"public",table:"players"},()=>loadData()).on("postgres_changes",{event:"*",schema:"public",table:"scorers"},()=>loadData()).subscribe();
 $("matchDate").value=new Date().toISOString().slice(0,10);
 checkAdmin();
