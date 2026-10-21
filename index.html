@@ -161,15 +161,16 @@ $("matchNotes").value="";$("goalLines").value="";message("Match result saved to 
 });
 async function deleteMatch(id){if(!confirm("Delete this match and its linked goalscorer records?"))return;const {error}=await db.from("matches").delete().eq("id",id);if(error){message("Could not delete match: "+error.message,"bad");return;}message("Match deleted.","good");await loadData();}
 db.auth.onAuthStateChange((event, session)=>{
-  // Defer Supabase work until the auth callback has finished.
-  // Do not treat unrelated auth events with a missing session as a sign-out.
+  // Avoid making Supabase requests inside its auth callback. Also avoid
+  // rerunning the admin RPC for every token refresh.
+  if (event === "TOKEN_REFRESHED") return;
   setTimeout(()=>{
     if (event === "SIGNED_OUT") {
       checkAdmin(null);
     } else if (session?.user) {
       checkAdmin(session.user);
     } else if (event === "INITIAL_SESSION") {
-      checkAdmin();
+      checkAdmin(null);
     }
   }, 0);
 });
