@@ -95,26 +95,27 @@ allPlayers=p.data||[];allMatches=m.data||[];allScorers=s.data||[];computeStandin
 }
 
 async function checkAdmin(){
-  const {data:{user}} = await db.auth.getUser();
+  const { data: { user }, error: userError } = await db.auth.getUser();
   currentUser = user || null;
   isAdmin = false;
 
-  if(user){
-    const {data, error} = await db
-      .from("admin_users")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    isAdmin = !error && !!data;
-    if(error) console.error("Admin check failed:", error);
+  if (user && !userError) {
+    // Use the RPC; direct SELECT from admin_users may be blocked by row-level security.
+    const { data, error } = await db.rpc("is_league_admin");
+    if (error) {
+      console.error("Admin check failed:", error);
+    } else {
+      isAdmin = data === true || data === "true";
+    }
+  } else if (userError) {
+    console.error("Could not read signed-in user:", userError);
   }
 
   $("rolePill").textContent = isAdmin ? "ADMIN MODE" : "PUBLIC VIEW";
   $("loginBox").classList.toggle("hidden", !!user);
   $("adminBox").classList.toggle("hidden", !isAdmin);
 
-  if(user && !isAdmin){
+  if (user && !isAdmin) {
     $("loginBox").classList.add("hidden");
     $("adminBox").classList.remove("hidden");
     $("adminBox").innerHTML =
@@ -125,14 +126,12 @@ async function checkAdmin(){
       await db.auth.signOut();
       location.reload();
     };
-  } else if(isAdmin){
-    $("adminWelcome").textContent =
-      "Administrator signed in as " + user.email;
+  } else if (isAdmin) {
+    $("adminWelcome").textContent = "Administrator signed in as " + user.email;
   }
 
   await loadData();
 }
-
 $("loginBtn").addEventListener("click",async()=>{clearMessage();const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("Enter your admin email and password.","bad");return;}const {error}=await db.auth.signInWithPassword({email,password});if(error){message("Sign-in failed: "+error.message,"bad");return;}await checkAdmin();if(isAdmin)message("Administrator login successful.","good");});
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();isAdmin=false;await checkAdmin();message("You have signed out.","good");});
 async function updateStatus(id){const sel=$("playersBody").querySelector(`[data-status="${CSS.escape(id)}"]`);if(!sel)return;const {error}=await db.from("players").update({status:sel.value}).eq("id",id);if(error){message("Could not update player status: "+error.message,"bad");return;}message("Player status updated.","good");await loadData();}
