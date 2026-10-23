@@ -8,7 +8,30 @@
 <style>
 :root{--navy:#10294a;--blue:#1769aa;--pale:#eaf4fc;--line:#d9e3ed;--ink:#172b40;--muted:#617386;--white:#fff;--green:#d9f4e3;--amber:#fff0c2;--red:#ffe0e0}
 *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:1120px;margin:auto;padding:18px}.hero{background:var(--navy);color:white;padding:24px;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.hero h1{margin:0;font-size:clamp(23px,4vw,34px);letter-spacing:.3px}.hero p{margin:5px 0 0;color:#dce9f7}.pill{background:#eaf4fc;color:var(--navy);padding:7px 11px;border-radius:99px;font-size:12px;font-weight:800}.statusline{margin:14px 0;color:var(--muted);font-size:13px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button,.btn{border:0;border-radius:9px;background:var(--navy);color:white;padding:10px 14px;font-weight:750;cursor:pointer}.tabs button{background:white;color:var(--navy);border:1px solid var(--line)}.tabs button.active{background:var(--navy);color:white}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #10294a0a}.panel h2{margin:0 0 13px;font-size:20px}.sub{color:var(--muted);font-size:13px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th{background:var(--navy);color:white;text-align:left;padding:11px 10px;font-size:12px;letter-spacing:.3px}td{padding:10px;border-bottom:1px solid var(--line)}tbody tr:nth-child(even){background:#f0f7fd}.empty{text-align:center;color:var(--muted);padding:24px}.badge{display:inline-block;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:800}.FIT{background:var(--green);color:#126536}.UNAVAILABLE{background:var(--amber);color:#805900}.INJURED{background:var(--red);color:#9a2020}.PENDING{background:#e8e7ff;color:#49409a}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:800;color:#42566a}.field input,.field select,.field textarea{font:inherit;padding:10px;border:1px solid #cbd7e3;border-radius:8px;background:white;width:100%}.field textarea{min-height:70px;resize:vertical}.formrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.formrow .btn{align-self:end}.hidden{display:none!important}.notice{padding:12px;border-radius:9px;background:#fff5d9;color:#755300;margin:10px 0}.good{background:#e3f7eb;color:#155e32}.bad{background:#ffe8e8;color:#8c2020}.match{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:12px 0}.score{font-size:22px;font-weight:900;color:var(--navy);white-space:nowrap}.smallbtn{padding:6px 9px;font-size:12px}.foot{font-size:12px;color:var(--muted);text-align:center;padding:20px}.topscorer{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid var(--line)}.rank{font-weight:900;color:var(--blue);width:34px}
-@media(max-width:600px){.wrap{padding:10px}.hero{padding:18px}.panel{padding:13px}.match{align-items:flex-start}.score{font-size:19px}}
+@media(max-width:600px){
+.wrap{padding:10px}.hero{padding:18px}.panel{padding:13px}.match{align-items:flex-start}.score{font-size:19px}
+#standings .tablewrap,#squads .tablewrap{overflow:visible}
+#standings table,#squads table{width:100%;min-width:0;border-collapse:separate;border-spacing:0}
+#standings thead,#squads thead{display:none}
+#standings tbody,#squads tbody{display:grid;gap:10px}
+#standings tbody tr,#squads tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+#standings tbody tr:first-child{border-top:1px solid var(--line)}
+#standings td,#squads td{display:flex;flex-direction:column;gap:3px;min-width:0;padding:9px 10px;border-bottom:1px solid #e8eef4;overflow-wrap:anywhere}
+#standings td::before,#squads td::before{content:attr(data-label);font-size:10px;line-height:1.2;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:800}
+#standings td:nth-child(1),#standings td:nth-child(2){background:#f0f7fd}
+#standings td:nth-child(2){grid-column:span 1}
+#standings td:last-child{font-weight:800}
+#squads tbody tr{grid-template-columns:repeat(2,minmax(0,1fr))}
+#squads td:first-child{grid-column:1/-1;background:#f0f7fd;font-size:16px}
+#squads td:last-child{grid-column:1/-1}
+#squads td select{max-width:100%;min-height:38px}
+#squads td .btn{margin-top:6px;min-height:36px}
+#squads td:last-child .btn{margin-right:5px}
+#standings .empty,#squads .empty{display:block;grid-column:1/-1}
+#standings .empty::before,#squads .empty::before{content:none}
+#teamFilters{gap:6px}
+#teamFilters button{padding:9px 10px}
+}
 </style>
 </head>
 <body>
@@ -24,7 +47,7 @@
 <section id="squads" class="panel hidden"><h2>Squads & Player Status</h2><div class="tabs" id="teamFilters"><button class="active" data-team="All">All teams</button><button data-team="Yasin FC">Yasin FC</button><button data-team="Hama FC">Hama FC</button><button data-team="Kai FC">Kai FC</button></div><div class="tablewrap"><table><thead><tr><th>Player</th><th>Team</th><th>Position</th><th>Status</th><th id="actionHead" class="hidden">Admin action</th></tr></thead><tbody id="playersBody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table></div></section>
 <section id="scorers" class="panel hidden"><h2>Top Scorers</h2><div id="scorersList"></div></section>
 <section id="admin" class="panel hidden">
-<h2>Administrator</h2><p class="sub">Sign in with the administrator account you created in Supabase. Only accounts explicitly listed as league admins can change shared data.</p>
+<h2>Administrator</h2><p class="sub">Sign in with the administrator account you created. Only accounts explicitly listed as league admins can change shared data.</p>
 <div id="loginBox"><div class="grid"><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="Your admin email"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Your password"></div></div><div class="formrow"><button class="btn" id="loginBtn">Sign in</button></div></div>
 <div id="adminBox" class="hidden">
 <div class="notice good" id="adminWelcome">Signed in.</div><button class="btn" id="logoutBtn">Sign out</button>
@@ -45,7 +68,7 @@
 <div class="field"><label>Position</label><input id="playerPosition" placeholder="DEF / MID / FWD / GK"></div>
 <div class="field"><label>Status</label><select id="playerStatus"><option>FIT</option><option>UNAVAILABLE</option><option>INJURED</option><option>PENDING</option></select></div>
 </div><div class="formrow"><button class="btn" id="addPlayerBtn">Add player</button></div>
-<p class="sub">Use the actions in Squads & Status to edit player details, update status, or delete a player. Changes are saved to the shared database.</p>
+<p class="sub">Use Squads & Status to update player status or delete a player. Changes are saved to the shared database.</p>
 <div id="editPlayerPanel" class="panel hidden" style="margin-top:16px">
 <h2>Edit Player</h2><input id="editPlayerId" type="hidden">
 <div class="grid">
@@ -84,7 +107,7 @@ function computeStandings(){
 const data=teams.map(team=>({team,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}));
 for(const m of allMatches){let h=data.find(x=>x.team===m.home_team),a=data.find(x=>x.team===m.away_team);if(!h||!a||m.home_score==null||m.away_score==null)continue;const hs=Number(m.home_score),as=Number(m.away_score);h.p++;a.p++;h.gf+=hs;h.ga+=as;a.gf+=as;a.ga+=hs;if(hs>as){h.w++;h.pts+=3;a.l++;}else if(hs<as){a.w++;a.pts+=3;h.l++;}else{h.d++;a.d++;h.pts++;a.pts++;}}
 data.forEach(x=>x.gd=x.gf-x.ga);data.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
-$("standingsBody").innerHTML=data.map((x,i)=>`<tr><td>${i+1}</td><td><strong>${esc(x.team)}</strong></td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gd>0?"+":""}${x.gd}</td><td><strong>${x.pts}</strong></td></tr>`).join("");
+$("standingsBody").innerHTML=data.map((x,i)=>`<tr><td data-label="Rank">${i+1}</td><td data-label="Team"><strong>${esc(x.team)}</strong></td><td data-label="Played">${x.p}</td><td data-label="Won">${x.w}</td><td data-label="Drawn">${x.d}</td><td data-label="Lost">${x.l}</td><td data-label="Goals For">${x.gf}</td><td data-label="Goals Against">${x.ga}</td><td data-label="Goal Difference">${x.gd>0?"+":""}${x.gd}</td><td data-label="Points"><strong>${x.pts}</strong></td></tr>`).join("");
 }
 function renderResults(){
 const list=$("resultsList");if(!allMatches.length){list.innerHTML='<div class="empty">No match results have been saved yet.</div>';return;}
@@ -95,7 +118,7 @@ function renderPlayers(){
 const list=allPlayers.filter(p=>activeTeam==="All"||p.team===activeTeam).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
 $("actionHead").classList.toggle("hidden",!isAdmin);
 if(!list.length){$("playersBody").innerHTML='<tr><td colspan="5" class="empty">No players found in the database yet.</td></tr>';return;}
-$("playersBody").innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.team)}</td><td>${esc(p.position||"—")}</td><td><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td><select data-status="${esc(p.id)}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select> <button class="btn smallbtn" data-save-status="${esc(p.id)}">Save status</button> <button class="btn smallbtn" data-delete-player="${esc(p.id)}" style="background:#9a2020">Delete</button></td>`:""}</tr>`).join("");
+$("playersBody").innerHTML=list.map(p=>`<tr><td data-label="Player"><strong>${esc(p.name)}</strong></td><td data-label="Team">${esc(p.team)}</td><td data-label="Position">${esc(p.position||"—")}</td><td data-label="Status"><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td data-label="Admin actions"><select data-status="${esc(p.id)}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select><div><button class="btn smallbtn" data-save-status="${esc(p.id)}">Save status</button> <button class="btn smallbtn" data-delete-player="${esc(p.id)}" style="background:#9a2020">Delete</button></div></td>`:""}</tr>`).join("");
 $("playersBody").querySelectorAll("[data-save-status]").forEach(b=>b.addEventListener("click",()=>updateStatus(b.dataset.saveStatus)));
 $("playersBody").querySelectorAll("[data-delete-player]").forEach(b=>b.addEventListener("click",()=>deletePlayer(b.dataset.deletePlayer)));
 }
