@@ -58,7 +58,7 @@
 </div>
 </div>
 </section>
-<div class="foot">Galacticals SFC .</div>
+<div class="foot">Galacticals SFC ·</div>
 </div>
 <script>
 const SUPABASE_URL = "https://fvedzafpfuknmrfnfbou.supabase.co";
@@ -95,9 +95,8 @@ function renderPlayers(){
 const list=allPlayers.filter(p=>activeTeam==="All"||p.team===activeTeam).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
 $("actionHead").classList.toggle("hidden",!isAdmin);
 if(!list.length){$("playersBody").innerHTML='<tr><td colspan="5" class="empty">No players found in the database yet.</td></tr>';return;}
-$("playersBody").innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.team)}</td><td>${esc(p.position||"—")}</td><td><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td><select data-status="${esc(p.id)}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select> <button class="btn smallbtn" data-save-status="${esc(p.id)}">Save status</button> <button class="btn smallbtn" data-edit-player="${esc(p.id)}">Edit</button> <button class="btn smallbtn" data-delete-player="${esc(p.id)}" style="background:#9a2020">Delete</button></td>`:""}</tr>`).join("");
+$("playersBody").innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.team)}</td><td>${esc(p.position||"—")}</td><td><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td><select data-status="${esc(p.id)}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select> <button class="btn smallbtn" data-save-status="${esc(p.id)}">Save status</button> <button class="btn smallbtn" data-delete-player="${esc(p.id)}" style="background:#9a2020">Delete</button></td>`:""}</tr>`).join("");
 $("playersBody").querySelectorAll("[data-save-status]").forEach(b=>b.addEventListener("click",()=>updateStatus(b.dataset.saveStatus)));
-$("playersBody").querySelectorAll("[data-edit-player]").forEach(b=>b.addEventListener("click",()=>startEditPlayer(b.dataset.editPlayer)));
 $("playersBody").querySelectorAll("[data-delete-player]").forEach(b=>b.addEventListener("click",()=>deletePlayer(b.dataset.deletePlayer)));
 }
 function renderScorers(){
