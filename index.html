@@ -45,10 +45,20 @@
 <div class="field"><label>Position</label><input id="playerPosition" placeholder="DEF / MID / FWD / GK"></div>
 <div class="field"><label>Status</label><select id="playerStatus"><option>FIT</option><option>UNAVAILABLE</option><option>INJURED</option><option>PENDING</option></select></div>
 </div><div class="formrow"><button class="btn" id="addPlayerBtn">Add player</button></div>
-<p class="sub">Use the status buttons in Squads & Status to update existing players. Results and squad changes are saved to the shared database.</p>
+<p class="sub">Use the actions in Squads & Status to edit player details, update status, or delete a player. Changes are saved to the shared database.</p>
+<div id="editPlayerPanel" class="panel hidden" style="margin-top:16px">
+<h2>Edit Player</h2><input id="editPlayerId" type="hidden">
+<div class="grid">
+<div class="field"><label>Player name</label><input id="editPlayerName" placeholder="Full name"></div>
+<div class="field"><label>Team</label><select id="editPlayerTeam"><option>Yasin FC</option><option>Hama FC</option><option>Kai FC</option></select></div>
+<div class="field"><label>Position</label><input id="editPlayerPosition" placeholder="DEF / MID / FWD / GK"></div>
+<div class="field"><label>Status</label><select id="editPlayerStatus"><option>FIT</option><option>UNAVAILABLE</option><option>INJURED</option><option>PENDING</option></select></div>
+</div>
+<div class="formrow"><button class="btn" id="savePlayerEditBtn">Save changes</button><button class="btn" id="cancelPlayerEditBtn" type="button">Cancel</button></div>
+</div>
 </div>
 </section>
-<div class="foot">Galacticals SFC · Shared database powered by Supabase</div>
+<div class="foot">Galacticals SFC .</div>
 </div>
 <script>
 const SUPABASE_URL = "https://fvedzafpfuknmrfnfbou.supabase.co";
@@ -85,8 +95,10 @@ function renderPlayers(){
 const list=allPlayers.filter(p=>activeTeam==="All"||p.team===activeTeam).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
 $("actionHead").classList.toggle("hidden",!isAdmin);
 if(!list.length){$("playersBody").innerHTML='<tr><td colspan="5" class="empty">No players found in the database yet.</td></tr>';return;}
-$("playersBody").innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.team)}</td><td>${esc(p.position||"—")}</td><td><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td><select data-status="${p.id}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select> <button class="btn smallbtn" data-save-status="${p.id}">Save</button></td>`:""}</tr>`).join("");
+$("playersBody").innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.team)}</td><td>${esc(p.position||"—")}</td><td><span class="badge ${esc(p.status||"PENDING")}">${esc(p.status||"PENDING")}</span></td>${isAdmin?`<td><select data-status="${esc(p.id)}" aria-label="Status for ${esc(p.name)}"><option ${p.status==="FIT"?"selected":""}>FIT</option><option ${p.status==="UNAVAILABLE"?"selected":""}>UNAVAILABLE</option><option ${p.status==="INJURED"?"selected":""}>INJURED</option><option ${p.status==="PENDING"?"selected":""}>PENDING</option></select> <button class="btn smallbtn" data-save-status="${esc(p.id)}">Save status</button> <button class="btn smallbtn" data-edit-player="${esc(p.id)}">Edit</button> <button class="btn smallbtn" data-delete-player="${esc(p.id)}" style="background:#9a2020">Delete</button></td>`:""}</tr>`).join("");
 $("playersBody").querySelectorAll("[data-save-status]").forEach(b=>b.addEventListener("click",()=>updateStatus(b.dataset.saveStatus)));
+$("playersBody").querySelectorAll("[data-edit-player]").forEach(b=>b.addEventListener("click",()=>startEditPlayer(b.dataset.editPlayer)));
+$("playersBody").querySelectorAll("[data-delete-player]").forEach(b=>b.addEventListener("click",()=>deletePlayer(b.dataset.deletePlayer)));
 }
 function renderScorers(){
 const tally={};for(const s of allScorers){const k=s.player_name; if(!tally[k])tally[k]={name:k,team:s.team,goals:0};tally[k].goals+=Number(s.goals||0);}
@@ -148,6 +160,45 @@ async function checkAdmin(userFromAuthEvent){
 $("loginBtn").addEventListener("click",async()=>{clearMessage();const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("Enter your admin email and password.","bad");return;}const {data,error}=await db.auth.signInWithPassword({email,password});if(error){message("Sign-in failed: "+error.message,"bad");return;}await checkAdmin(data?.user);if(isAdmin)message("Administrator login successful.","good");});
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();isAdmin=false;await checkAdmin();message("You have signed out.","good");});
 async function updateStatus(id){const sel=$("playersBody").querySelector(`[data-status="${CSS.escape(id)}"]`);if(!sel)return;const {error}=await db.from("players").update({status:sel.value}).eq("id",id);if(error){message("Could not update player status: "+error.message,"bad");return;}message("Player status updated.","good");await loadData();}
+function startEditPlayer(id){
+const player=allPlayers.find(p=>String(p.id)===String(id));
+if(!player){message("Could not find that player. Refresh the page and try again.","bad");return;}
+$("editPlayerId").value=player.id;
+$("editPlayerName").value=player.name||"";
+$("editPlayerTeam").value=player.team||teams[0];
+$("editPlayerPosition").value=player.position||"";
+$("editPlayerStatus").value=player.status||"PENDING";
+$("editPlayerPanel").classList.remove("hidden");
+$("editPlayerName").focus();
+}
+function cancelPlayerEdit(){$("editPlayerPanel").classList.add("hidden");$("editPlayerId").value="";}
+$("cancelPlayerEditBtn").addEventListener("click",cancelPlayerEdit);
+$("savePlayerEditBtn").addEventListener("click",async()=>{
+if(!isAdmin){message("Administrator access is required to edit players.","bad");return;}
+const id=$("editPlayerId").value;
+const name=$("editPlayerName").value.trim();
+const team=$("editPlayerTeam").value;
+const position=$("editPlayerPosition").value.trim();
+const status=$("editPlayerStatus").value;
+if(!id){message("Choose a player to edit first.","bad");return;}
+if(!name){message("Enter the player's name.","bad");return;}
+if(!teams.includes(team)){message("Choose a valid team.","bad");return;}
+const button=$("savePlayerEditBtn");button.disabled=true;button.textContent="Saving…";
+const {error}=await db.from("players").update({name,team,position,status}).eq("id",id);
+button.disabled=false;button.textContent="Save changes";
+if(error){message("Could not update player: "+error.message,"bad");return;}
+cancelPlayerEdit();message("Player details updated successfully.","good");await loadData();
+});
+async function deletePlayer(id){
+if(!isAdmin){message("Administrator access is required to delete players.","bad");return;}
+const player=allPlayers.find(p=>String(p.id)===String(id));
+if(!player){message("Could not find that player. Refresh the page and try again.","bad");return;}
+if(!confirm("Delete "+player.name+" from "+player.team+"? This removes the player from the squad list. Existing goalscorer history will remain. This cannot be undone here."))return;
+const {error}=await db.from("players").delete().eq("id",id);
+if(error){message("Could not delete player: "+error.message,"bad");return;}
+if($("editPlayerId").value===String(id))cancelPlayerEdit();
+message(player.name+" was deleted from the squad.","good");await loadData();
+}
 $("addPlayerBtn").addEventListener("click",async()=>{const name=$("playerName").value.trim(),team=$("playerTeam").value,position=$("playerPosition").value.trim(),status=$("playerStatus").value;if(!name){message("Enter the player's name.","bad");return;}const {error}=await db.from("players").insert({name,team,position,status});if(error){message("Could not add player: "+error.message,"bad");return;}["playerName","playerPosition"].forEach(id=>$(id).value="");message("Player added to the shared database.","good");await loadData();});
 $("saveMatchBtn").addEventListener("click",async()=>{
 const date=$("matchDate").value,home_team=$("homeTeam").value,away_team=$("awayTeam").value,home_score=Number($("homeScore").value),away_score=Number($("awayScore").value),notes=$("matchNotes").value.trim();
