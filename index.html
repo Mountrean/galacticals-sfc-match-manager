@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--navy:#10294a;--blue:#1769aa;--pale:#eaf4fc;--line:#d9e3ed;--ink:#172b40;--muted:#617386;--white:#fff;--green:#d9f4e3;--amber:#fff0c2;--red:#ffe0e0}
-*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:1120px;margin:auto;padding:18px}.hero{background:var(--navy);color:white;padding:24px;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.hero h1{margin:0;font-size:clamp(23px,4vw,34px);letter-spacing:.3px}.hero p{margin:5px 0 0;color:#dce9f7}.pill{background:#eaf4fc;color:var(--navy);padding:7px 11px;border-radius:99px;font-size:12px;font-weight:800}.statusline{margin:14px 0;color:var(--muted);font-size:13px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button,.btn{border:0;border-radius:9px;background:var(--navy);color:white;padding:10px 14px;font-weight:750;cursor:pointer}.tabs button{background:white;color:var(--navy);border:1px solid var(--line)}.tabs button.active{background:var(--navy);color:white}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #10294a0a}.panel h2{margin:0 0 13px;font-size:20px}.sub{color:var(--muted);font-size:13px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th{background:var(--navy);color:white;text-align:left;padding:11px 10px;font-size:12px;letter-spacing:.3px}td{padding:10px;border-bottom:1px solid var(--line)}tbody tr:nth-child(even){background:#f0f7fd}.empty{text-align:center;color:var(--muted);padding:24px}.badge{display:inline-block;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:800}.FIT{background:var(--green);color:#126536}.UNAVAILABLE{background:var(--amber);color:#805900}.INJURED{background:var(--red);color:#9a2020}.PENDING{background:#e8e7ff;color:#49409a}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:800;color:#42566a}.field input,.field select,.field textarea{font:inherit;padding:10px;border:1px solid #cbd7e3;border-radius:8px;background:white;width:100%}.field textarea{min-height:70px;resize:vertical}.formrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.formrow .btn{align-self:end}.hidden{display:none!important}.notice{padding:12px;border-radius:9px;background:#fff5d9;color:#755300;margin:10px 0}.good{background:#e3f7eb;color:#155e32}.bad{background:#ffe8e8;color:#8c2020}.match{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:12px 0}.score{font-size:22px;font-weight:900;color:var(--navy);white-space:nowrap}.smallbtn{padding:6px 9px;font-size:12px}.foot{font-size:12px;color:var(--muted);text-align:center;padding:20px}.topscorer{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid var(--line)}.rank{font-weight:900;color:var(--blue);width:34px}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:1120px;margin:auto;padding:18px}.hero{background:var(--navy);color:white;padding:24px;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.hero h1{margin:0;font-size:clamp(23px,4vw,34px);letter-spacing:.3px}.hero p{margin:5px 0 0;color:#dce9f7}.pill{background:#eaf4fc;color:var(--navy);padding:7px 11px;border-radius:99px;font-size:12px;font-weight:800}.statusline{margin:14px 0;color:var(--muted);font-size:13px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button,.btn{border:0;border-radius:9px;background:var(--navy);color:white;padding:10px 14px;font-weight:750;cursor:pointer}.tabs button{background:white;color:var(--navy);border:1px solid var(--line)}.tabs button.active{background:var(--navy);color:white}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #10294a0a}.panel h2{margin:0 0 13px;font-size:20px}.sub{color:var(--muted);font-size:13px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:600px}th{background:var(--navy);color:white;text-align:left;padding:11px 10px;font-size:12px;letter-spacing:.3px}td{padding:10px;border-bottom:1px solid var(--line)}tbody tr:nth-child(even){background:#f0f7fd}.empty{text-align:center;color:var(--muted);padding:24px}.badge{display:inline-block;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:800}.FIT{background:var(--green);color:#126536}.UNAVAILABLE{background:var(--amber);color:#805900}.INJURED{background:var(--red);color:#9a2020}.PENDING{background:#e8e7ff;color:#49409a}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:800;color:#42566a}.field input,.field select,.field textarea{font:inherit;padding:10px;border:1px solid #cbd7e3;border-radius:8px;background:white;width:100%}.field textarea{min-height:70px;resize:vertical}.formrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.formrow .btn{align-self:end}.hidden{display:none!important}.notice{padding:12px;border-radius:9px;background:#fff5d9;color:#755300;margin:10px 0}.good{background:#e3f7eb;color:#155e32}.bad{background:#ffe8e8;color:#8c2020}.match{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:12px 0}.score{font-size:22px;font-weight:900;color:var(--navy);white-space:nowrap}.smallbtn{padding:6px 9px;font-size:12px}.foot{font-size:12px;color:var(--muted);text-align:center;padding:20px}.topscorer{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid var(--line)}.rank{font-weight:900;color:var(--blue);width:34px}.scorer-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin:8px 0}.scorer-entry select{font:inherit;padding:10px;border:1px solid #cbd7e3;border-radius:8px;background:white;width:100%;min-width:0}.scorer-team{font-size:12px;color:var(--muted)}@media(max-width:600px){.scorer-entry{grid-template-columns:minmax(0,1fr) auto}}
 @media(max-width:600px){
 .wrap{padding:10px}.hero{padding:18px}.panel{padding:13px}.match{align-items:flex-start}.score{font-size:19px}
 #standings .tablewrap,#squads .tablewrap{overflow:visible}
@@ -59,7 +59,7 @@
 <div class="field"><label>Home score</label><input id="homeScore" type="number" min="0" step="1" value="0"></div>
 <div class="field"><label>Away score</label><input id="awayScore" type="number" min="0" step="1" value="0"></div>
 <div class="field"><label>Notes (optional)</label><input id="matchNotes" placeholder="Match day / venue / notes"></div>
-<div class="field" style="grid-column:1/-1"><label>Goalscorers (optional, one per line: Player name | Team | Goals)</label><textarea id="goalLines" placeholder="Zabudha | Yasin FC | 2&#10;Martin | Kai FC | 1"></textarea></div>
+<div class="field" style="grid-column:1/-1"><label>Goalscorers (add one entry for every goal)</label><p class="sub">Choose a player from either selected team for each goal. The number of entries must match the final score.</p><div id="scorerEntries"></div><div class="formrow"><button class="btn" id="addScorerBtn" type="button">+ Add goalscorer</button></div></div>
 </div><div class="formrow"><button class="btn" id="saveMatchBtn">Save match</button></div>
 <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
 <h2>Add Player</h2><div class="grid">
@@ -110,9 +110,15 @@ data.forEach(x=>x.gd=x.gf-x.ga);data.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.
 $("standingsBody").innerHTML=data.map((x,i)=>`<tr><td data-label="Rank">${i+1}</td><td data-label="Team"><strong>${esc(x.team)}</strong></td><td data-label="Played">${x.p}</td><td data-label="Won">${x.w}</td><td data-label="Drawn">${x.d}</td><td data-label="Lost">${x.l}</td><td data-label="Goals For">${x.gf}</td><td data-label="Goals Against">${x.ga}</td><td data-label="Goal Difference">${x.gd>0?"+":""}${x.gd}</td><td data-label="Points"><strong>${x.pts}</strong></td></tr>`).join("");
 }
 function renderResults(){
-const list=$("resultsList");if(!allMatches.length){list.innerHTML='<div class="empty">No match results have been saved yet.</div>';return;}
-list.innerHTML=[...allMatches].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.created_at||"").localeCompare(a.created_at||"")).map(m=>`<div class="match"><div><strong>${esc(m.home_team)} vs ${esc(m.away_team)}</strong><div class="sub">${esc(m.date||"Date not set")}${m.notes?" · "+esc(m.notes):""}</div></div><div class="score">${m.home_score} – ${m.away_score}</div>${isAdmin?`<button class="btn smallbtn" data-delete-match="${m.id}">Delete</button>`:""}</div>`).join("");
-list.querySelectorAll("[data-delete-match]").forEach(b=>b.addEventListener("click",()=>deleteMatch(b.dataset.deleteMatch)));
+ const list=$("resultsList");
+ if(!allMatches.length){list.innerHTML='<div class="empty">No match results have been saved yet.</div>';return;}
+ list.innerHTML=[...allMatches].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.created_at||"").localeCompare(a.created_at||"")).map(m=>{
+   const scorers=allScorers.filter(s=>String(s.match_id)===String(m.id));
+   const homeScorers=scorers.filter(s=>s.team===m.home_team).map(s=>`${esc(s.player_name)}${Number(s.goals)>1?" ("+Number(s.goals)+")":""}`);
+   const awayScorers=scorers.filter(s=>s.team===m.away_team).map(s=>`${esc(s.player_name)}${Number(s.goals)>1?" ("+Number(s.goals)+")":""}`);
+   return `<div class="match"><div style="flex:1;min-width:0"><strong>${esc(m.home_team)} vs ${esc(m.away_team)}</strong><div class="sub">${esc(m.date||"Date not set")}${m.notes?" · "+esc(m.notes):""}</div><div class="sub" style="margin-top:6px"><strong>${esc(m.home_team)}:</strong> ${homeScorers.length?homeScorers.join(", "):"No goalscorers recorded"}<br><strong>${esc(m.away_team)}:</strong> ${awayScorers.length?awayScorers.join(", "):"No goalscorers recorded"}</div></div><div class="score">${m.home_score} – ${m.away_score}</div>${isAdmin?`<button class="btn smallbtn" data-delete-match="${m.id}">Delete</button>`:""}</div>`;
+ }).join("");
+ list.querySelectorAll("[data-delete-match]").forEach(b=>b.addEventListener("click",()=>deleteMatch(b.dataset.deleteMatch)));
 }
 function renderPlayers(){
 const list=allPlayers.filter(p=>activeTeam==="All"||p.team===activeTeam).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
@@ -222,15 +228,81 @@ if($("editPlayerId").value===String(id))cancelPlayerEdit();
 message(player.name+" was deleted from the squad.","good");await loadData();
 }
 $("addPlayerBtn").addEventListener("click",async()=>{const name=$("playerName").value.trim(),team=$("playerTeam").value,position=$("playerPosition").value.trim(),status=$("playerStatus").value;if(!name){message("Enter the player's name.","bad");return;}const {error}=await db.from("players").insert({name,team,position,status});if(error){message("Could not add player: "+error.message,"bad");return;}["playerName","playerPosition"].forEach(id=>$(id).value="");message("Player added to the shared database.","good");await loadData();});
+let scorerEntryCount=0;
+function selectedMatchTeams(){return [$("homeTeam").value,$("awayTeam").value];}
+function renderScorerEntry(){
+ const container=$("scorerEntries");
+ const teamsNow=selectedMatchTeams();
+ const row=document.createElement("div");
+ row.className="scorer-entry";
+ row.dataset.scorerEntry=String(++scorerEntryCount);
+ const select=document.createElement("select");
+ select.setAttribute("aria-label","Goalscorer player");
+ select.innerHTML='<option value="">Choose goalscorer…</option>';
+ allPlayers.filter(p=>teamsNow.includes(p.team)).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name)).forEach(p=>{
+   const option=document.createElement("option");
+   option.value=String(p.id);
+   option.textContent=`${p.name} — ${p.team}`;
+   option.dataset.name=p.name;
+   option.dataset.team=p.team;
+   select.appendChild(option);
+ });
+ const remove=document.createElement("button");
+ remove.type="button";remove.className="btn smallbtn";remove.textContent="Remove";
+ remove.addEventListener("click",()=>row.remove());
+ const wrap=document.createElement("div");
+ wrap.appendChild(select);
+ const teamNote=document.createElement("div");
+ teamNote.className="scorer-team";teamNote.textContent="Select a player from either team";
+ select.addEventListener("change",()=>{
+   const option=select.selectedOptions[0];
+   teamNote.textContent=option?.dataset?.team||"Select a player from either team";
+ });
+ wrap.appendChild(teamNote);
+ row.appendChild(wrap);row.appendChild(remove);container.appendChild(row);
+}
+function refreshScorerDropdowns(){
+ const teamsNow=selectedMatchTeams();
+ document.querySelectorAll("#scorerEntries .scorer-entry select").forEach(select=>{
+   const old=select.value;
+   select.innerHTML='<option value="">Choose goalscorer…</option>';
+   allPlayers.filter(p=>teamsNow.includes(p.team)).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name)).forEach(p=>{
+     const option=document.createElement("option");option.value=String(p.id);option.textContent=`${p.name} — ${p.team}`;option.dataset.name=p.name;option.dataset.team=p.team;select.appendChild(option);
+   });
+   if([...select.options].some(o=>o.value===old))select.value=old;
+   select.dispatchEvent(new Event("change"));
+ });
+}
+$("addScorerBtn").addEventListener("click",renderScorerEntry);
+$("homeTeam").addEventListener("change",refreshScorerDropdowns);
+$("awayTeam").addEventListener("change",refreshScorerDropdowns);
 $("saveMatchBtn").addEventListener("click",async()=>{
-const date=$("matchDate").value,home_team=$("homeTeam").value,away_team=$("awayTeam").value,home_score=Number($("homeScore").value),away_score=Number($("awayScore").value),notes=$("matchNotes").value.trim();
-if(home_team===away_team){message("Choose two different teams.","bad");return;}if($("homeScore").value===""||$("awayScore").value===""||home_score<0||away_score<0){message("Enter valid scores for both teams.","bad");return;}
-const {data:match,error}=await db.from("matches").insert({date:date||null,home_team,away_team,home_score,away_score,notes}).select().single();
-if(error){message("Could not save match: "+error.message,"bad");return;}
-const lines=$("goalLines").value.split("\n").map(x=>x.trim()).filter(Boolean);const rows=[];
-for(const line of lines){const parts=line.split("|").map(x=>x.trim());if(parts.length!==3||!parts[0]||!teams.includes(parts[1])||!Number.isInteger(Number(parts[2]))||Number(parts[2])<1){message("Match saved, but scorer line was skipped because it must be: Player name | Team | Goals. Fix scorer entries and add them using a new result only if needed.","bad");continue;}rows.push({match_id:match.id,player_name:parts[0],team:parts[1],goals:Number(parts[2])});}
-if(rows.length){const {error:se}=await db.from("scorers").insert(rows);if(se)message("Match saved, but goalscorers could not be saved: "+se.message,"bad");}
-$("matchNotes").value="";$("goalLines").value="";message("Match result saved to the shared league database.","good");await loadData();
+ if(!isAdmin){message("Administrator access is required to save match results.","bad");return;}
+ const date=$("matchDate").value,home_team=$("homeTeam").value,away_team=$("awayTeam").value;
+ const homeRaw=$("homeScore").value,awayRaw=$("awayScore").value;
+ const home_score=Number(homeRaw),away_score=Number(awayRaw),notes=$("matchNotes").value.trim();
+ if(home_team===away_team){message("Choose two different teams.","bad");return;}
+ if(homeRaw===""||awayRaw===""||!Number.isInteger(home_score)||!Number.isInteger(away_score)||home_score<0||away_score<0){message("Enter valid whole-number scores for both teams.","bad");return;}
+ const entries=[...document.querySelectorAll("#scorerEntries .scorer-entry select")];
+ if(entries.length!==home_score+away_score){message(`Add exactly ${home_score+away_score} goalscorer entr${home_score+away_score===1?"y":"ies"} to match the final score (${home_score}–${away_score}).`,"bad");return;}
+ const rows=[];
+ for(const select of entries){
+   const option=select.selectedOptions[0];
+   if(!select.value||!option||!option.dataset.name||!option.dataset.team){message("Choose a player for every goalscorer entry.","bad");return;}
+   rows.push({player_name:option.dataset.name,team:option.dataset.team,goals:1});
+ }
+ const homeGoals=rows.filter(r=>r.team===home_team).length,awayGoals=rows.filter(r=>r.team===away_team).length;
+ if(homeGoals!==home_score||awayGoals!==away_score){message(`Goalscorers must match the score: ${home_team} needs ${home_score} and ${away_team} needs ${away_score}. Currently selected: ${homeGoals}–${awayGoals}.`,"bad");return;}
+ const button=$("saveMatchBtn");button.disabled=true;button.textContent="Saving…";
+ const {data:match,error}=await db.from("matches").insert({date:date||null,home_team,away_team,home_score,away_score,notes}).select().single();
+ if(error){button.disabled=false;button.textContent="Save match";message("Could not save match: "+error.message,"bad");return;}
+ if(rows.length){
+   const linkedRows=rows.map(r=>({...r,match_id:match.id}));
+   const {error:se}=await db.from("scorers").insert(linkedRows);
+   if(se){button.disabled=false;button.textContent="Save match";message("The match score was saved, but goalscorers could not be saved: "+se.message+". Please check the scorers table before retrying to avoid duplicate match results.","bad");await loadData();return;}
+ }
+ $("matchNotes").value="";$("scorerEntries").innerHTML="";button.disabled=false;button.textContent="Save match";
+ message("Match result and goalscorers saved to the shared league database.","good");await loadData();
 });
 async function deleteMatch(id){if(!confirm("Delete this match and its linked goalscorer records?"))return;const {error}=await db.from("matches").delete().eq("id",id);if(error){message("Could not delete match: "+error.message,"bad");return;}message("Match deleted.","good");await loadData();}
 db.auth.onAuthStateChange((event, session)=>{
